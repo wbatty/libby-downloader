@@ -100,8 +100,7 @@ export class MergeService {
       }
 
       // Prepare output file
-      const sanitizedTitle = this.sanitizeFilename(metadata.metadata.title);
-      const outputFilename = `${sanitizedTitle}.m4b`;
+      const outputFilename = this.getOutputFilename(metadata.metadata.title);
       const outputPath = path.join(resolved, outputFilename);
 
       try {
@@ -147,6 +146,13 @@ export class MergeService {
         logger.debug('Failed to clean up temp directory');
       }
     }
+  }
+
+  /**
+   * Filename the merged M4B will get for a given book title
+   */
+  getOutputFilename(title: string): string {
+    return `${this.sanitizeFilename(title)}.m4b`;
   }
 
   /**

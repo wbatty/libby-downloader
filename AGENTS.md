@@ -16,6 +16,7 @@ npm run dev                       # Run interactive CLI
 npm run dev -- list               # List downloaded books
 npm run dev -- tag                # Tag MP3 files
 npm run dev -- merge              # Merge chapters into M4B audiobook
+npm run dev -- watch --final-dir ./library  # Auto-merge finished downloads into Author/Title/ library
 npm run dev -- --data-dir ./fixtures  # Use test fixtures instead of real downloads
 
 # Testing & Validation
@@ -88,6 +89,11 @@ npm run release:dry               # Preview release without changes
    - Merges chapter MP3s into single M4B audiobook via fluent-ffmpeg
    - Embeds chapter markers, metadata, and cover art
    - Output: 64kbps AAC mono
+
+4. **CLI Watch (Optional):**
+   - `libby watch --final-dir <lib>` polls the downloads folder
+   - A book is ready when metadata.json lists N chapters, N `chapter-*.mp3` exist, no partial files, and the folder is settled
+   - Merges, moves the M4B to `<lib>/<Author>/<Title>/` (Audiobookshelf layout), then moves the source folder to `_archive/`
 
 Extension handles ALL downloading. CLI is for tagging, merging, and listing only.
 

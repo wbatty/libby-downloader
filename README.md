@@ -44,6 +44,7 @@ libby tag                  # Tag MP3 files with metadata (interactive)
 libby tag ~/path/to/book/  # Tag a specific folder
 libby merge                # Merge chapters into M4B audiobook (interactive)
 libby merge ~/path/to/book/
+libby watch --final-dir ~/audiobooks  # Auto-merge finished downloads into a library
 ```
 
 Options:
@@ -51,6 +52,25 @@ Options:
 - `--data-dir <path>` — Override the downloads directory
 - `--title`, `--author`, `--narrator`, `--cover-url` — Override tag metadata
 - `--verbose` — Enable debug logging
+
+### Audiobookshelf (auto-merge)
+
+`libby watch` keeps running in the background. When a download finishes (every chapter plus `metadata.json` present, and no files changed for 30s), it merges the chapters into an M4B and moves it into your library using the layout [Audiobookshelf](https://www.audiobookshelf.org/) expects:
+
+```
+<final-dir>/<Author>/<Title>/<Title>.m4b
+```
+
+The original download folder then moves to `~/Downloads/libby-downloads/_archive/`. Everything in the archive is already in your library, so it's safe to delete.
+
+```bash
+libby watch --final-dir /mnt/audiobooks                       # Watch continuously
+libby watch --final-dir /mnt/audiobooks --once                # Process ready books, then exit (for cron)
+LIBBY_FINAL_DIR=/mnt/audiobooks libby watch                   # Or configure via env
+libby watch --final-dir /mnt/audiobooks --archive-dir ~/done  # Custom archive location
+```
+
+Watch options: `--interval <s>` (scan frequency, default 10), `--settle <s>` (quiet period before processing, default 30). A book already in the library is skipped and reported, never overwritten.
 
 ## Development
 

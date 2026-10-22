@@ -3,20 +3,30 @@ import { EmbedOptions } from '../../services/metadata-service';
 import { BookList } from './BookList';
 import { TagProgress } from './TagProgress';
 import { MergeProgress } from './MergeProgress';
+import { WatchProgress } from './WatchProgress';
+import type { WatchOptions } from '../../services/watch-service';
 import { InteractiveMenu } from './InteractiveMenu';
 import { Header } from './Header';
 
 export interface AppProps {
-  command: 'interactive' | 'list' | 'tag' | 'merge';
+  command: 'interactive' | 'list' | 'tag' | 'merge' | 'watch';
   dataDir?: string;
   folder?: string;
   tagOptions?: EmbedOptions;
   mergeOptions?: {
     force?: boolean;
   };
+  watchOptions?: Omit<WatchOptions, 'signal' | 'dataDir'> & { once?: boolean };
 }
 
-export function App({ command, dataDir, folder, tagOptions, mergeOptions }: AppProps) {
+export function App({
+  command,
+  dataDir,
+  folder,
+  tagOptions,
+  mergeOptions,
+  watchOptions,
+}: AppProps) {
   const { exit } = useApp();
 
   if (command === 'interactive') {
@@ -51,6 +61,16 @@ export function App({ command, dataDir, folder, tagOptions, mergeOptions }: AppP
           onComplete={() => exit()}
           onError={() => exit()}
         />
+      </Box>
+    );
+  }
+
+  if (command === 'watch' && watchOptions) {
+    const { once, ...options } = watchOptions;
+    return (
+      <Box flexDirection="column" marginY={1}>
+        <Header />
+        <WatchProgress options={{ ...options, dataDir }} once={once} onComplete={() => exit()} />
       </Box>
     );
   }

@@ -259,6 +259,31 @@ assert_output_contains "shows version" "$OUTPUT" "$EXPECTED_VERSION"
 echo ""
 
 # ──────────────────────────────────────────────────────────────
+# Test 13: watch --once (merge + move to library + archive)
+# ──────────────────────────────────────────────────────────────
+
+echo -e "${BOLD}13. watch --once into a library folder${RESET}"
+LIBRARY_DIR=$(mktemp -d)
+OUTPUT=$(cli watch --data-dir "$FIXTURES_DIR" --final-dir "$LIBRARY_DIR" --once --settle 0) || true
+
+assert_output_contains "reports finalized book" "$OUTPUT" "Mystery at Midnight"
+assert_output_contains "reports waiting book" "$OUTPUT" "Waiting for metadata.json"
+assert_file_exists "moves m4b into Author/Title" "$LIBRARY_DIR/Alice Walker/Mystery at Midnight/Mystery at Midnight.m4b"
+assert_file_exists "archives source folder" "$FIXTURES_DIR/_archive/Mystery at Midnight/metadata.json"
+rm -rf "$LIBRARY_DIR"
+echo ""
+
+# ──────────────────────────────────────────────────────────────
+# Test 14: watch requires --final-dir
+# ──────────────────────────────────────────────────────────────
+
+echo -e "${BOLD}14. watch without --final-dir${RESET}"
+OUTPUT=$(env -u LIBBY_FINAL_DIR FORCE_COLOR=0 npx tsx "$PROJECT_DIR/src/cli.ts" watch 2>&1 || true)
+
+assert_output_contains "shows required option error" "$OUTPUT" "--final-dir is required"
+echo ""
+
+# ──────────────────────────────────────────────────────────────
 # Summary
 # ──────────────────────────────────────────────────────────────
 

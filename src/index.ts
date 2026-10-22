@@ -23,6 +23,9 @@
 export { BookService } from './services/book-service';
 export { MetadataService } from './services/metadata-service';
 export { FileService } from './services/file-service';
+export { MergeService } from './services/merge-service';
+export { FinalizeService } from './services/finalize-service';
+export { WatchService } from './services/watch-service';
 
 // Types
 export type { BookInfo } from './types/book';
